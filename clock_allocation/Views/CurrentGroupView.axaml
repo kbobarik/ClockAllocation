@@ -1,0 +1,82 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.CurrentGroupView"
+             x:DataType="vm:CurrentGroupViewModel">
+    
+    <UserControl.Styles>
+        <Style Selector="TextBlock.header">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#B44A45"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+        </Style>
+        
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="#FFF"/>
+            <Setter Property="BoxShadow" Value="0 2 4 #00000019"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0 0 0 15"/>
+        </Style>
+        
+        <Style Selector="StackPanel.item">
+            <Setter Property="Spacing" Value="15"/>
+        </Style>
+        
+        <Style Selector="TextBlock.item-text">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="20">
+            <TextBlock Text="Список групп" Classes="header"/>
+            <Grid ColumnDefinitions="*,*,*">
+                <TextBlock Text="Год поступления" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
+                <TextBlock Grid.Column="1" Text="Финансовая основа" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
+                <TextBlock Grid.Column="2" Text="Количество набранных групп" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
+            </Grid>
+            <ItemsControl ItemsSource="{Binding Groups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="card">
+                            <Grid ColumnDefinitions="*,*,*">
+                                <TextBlock Text="{Binding YearOfAdmission}" 
+                                           Classes="item-text"
+                                           TextAlignment="Center" TextWrapping="Wrap"
+                                           Width="100"/>
+                                
+                                <TextBlock Grid.Column="1" Text="{Binding FormOfEducation}" 
+                                           Classes="item-text"
+                                           TextAlignment="Center" TextWrapping="Wrap"
+                                           Width="200"/>
+                                
+                                <TextBlock Grid.Column="2" Text="{Binding CountGroup}" 
+                                           Classes="item-text"
+                                           Foreground="#B44A45"
+                                           TextAlignment="Center" TextWrapping="Wrap"
+                                           FontWeight="Bold"
+                                           Width="100"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <Button Content="Добавить группу"
+                    HorizontalAlignment="Right"
+                    Background="#B44A45"
+                    Foreground="White"
+                    Padding="15 8"
+                    CornerRadius="4"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

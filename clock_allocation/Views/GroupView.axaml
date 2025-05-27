@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.GroupView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             xmlns:models="clr-namespace:clock_allocation.Models"
+             x:DataType="vm:GroupViewModel"
+             xmlns:conv="clr-namespace:clock_allocation.Resources">
+    <UserControl.Resources>
+        <conv:SpecializationToString x:Key="SpecializationToString" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto,*">
+        <AutoCompleteBox  Grid.Row="0"
+                         ItemsSource="{Binding Specializations}"
+                         Watermark="Введите специальность"
+                         MinimumPrefixLength="0"
+                         FilterMode="Custom"
+                         ItemFilter="{Binding SpecializationFilter}"
+                         SelectedItem="{Binding CurrentSpecialization}"
+                         IsTextCompletionEnabled="True">
+            <AutoCompleteBox.ItemTemplate>
+                <DataTemplate DataType="models:Specialization">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Converter={StaticResource SpecializationToString}}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </AutoCompleteBox.ItemTemplate>
+        </AutoCompleteBox>
+        <UserControl Grid.Row="1" Content="{Binding UserControl}"></UserControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="clock_allocation/App.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddCurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddModuleAndSubject.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddModuleAndSubjectView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddSpecializationView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddTeacherView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddTeachingLoadingView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/Authorization.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AuthorizationView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CertainCurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CertainCurriculumViewModel.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CurrentGroup.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CurrentGroupView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CurrentModuleAndSubjectView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/GroupView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/MainView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/MainWindow.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/ModuleAndSubjectView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/SpecializationView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/TeachersView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/TeachingLoadingView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/СurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

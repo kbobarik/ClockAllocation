@@ -1,0 +1,45 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.AddTeacherView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:AddTeacherViewModel">
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="20">
+        <TextBlock Text="{Binding Title}"
+                   FontSize="24"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+              Margin="0,0,0,20">
+            <TextBlock Text="Фамилия:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Teacher.Surname, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Имя:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Teacher.Name, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Отчество:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Teacher.Patronymic, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Логин:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" IsVisible="{Binding !Update}" />
+            <TextBox Text="{Binding Teacher.Login, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Margin="5" IsVisible="{Binding !Update}" />
+
+            <TextBlock Text="Пароль:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" IsVisible="{Binding !Update}" />
+            <TextBox Text="{Binding Teacher.Password, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="5"  IsVisible="{Binding !Update}"/>
+            <TextBlock Text="Повторите пароль:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" IsVisible="{Binding !Update}" />
+            <TextBox Text="{Binding Password, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" Margin="5" IsVisible="{Binding !Update}" />
+        </Grid>
+        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="DarkRed"></TextBlock>
+        <Button Grid.Row="3" Content="Сохранить"
+                Command="{Binding Save}"
+                HorizontalAlignment="Center"
+                Width="150"
+                Height="40"
+                Background="#B44A45"
+                Foreground="White"
+                BorderThickness="0"
+                CornerRadius="8" />
+    </Grid>
+</UserControl>

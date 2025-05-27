@@ -1,0 +1,350 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.TeachersView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:conv="clr-namespace:clock_allocation.Resources"
+             x:DataType="vm:TeachersViewModel">
+
+    <UserControl.Resources>
+        <conv:TupleConverter x:Key="Converter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto, *" Margin="20">
+        <Popup IsOpen="{Binding IsUpdate}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="180">
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+
+                    <TextBlock Text="Введите пароль пользователя"
+                               FontSize="16"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+
+                    <TextBox Text="{Binding Password}" PasswordChar="*"
+                             Height="35"
+                             CornerRadius="8"
+                             Background="#fafafa"
+                             BorderBrush="#ccc"
+                             BorderThickness="1"
+                             Margin="0,5,0,0">
+                    </TextBox>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Далее"
+                                Command="{Binding CheckPassword}"
+                                Background="#B44A45"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                        <Button Content="Отмена"
+                                Command="{Binding CancelUpdate}"
+                                Background="#757575"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               FontSize="12"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="#B44A45" />
+                </StackPanel>
+
+            </Border>
+        </Popup>
+        <Popup IsOpen="{Binding UpdatePassword}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="230">
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+
+                    <TextBlock Text="Обновление пароля"
+                               FontSize="16"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+
+                    <TextBox Text="{Binding Password}" Watermark="Введите пароль"
+                             Height="35"
+                             CornerRadius="8"
+                             Background="#fafafa"
+                             BorderBrush="#ccc"
+                             BorderThickness="1"
+                             Margin="0,5,0,0">
+                    </TextBox>
+                    <TextBox Text="{Binding RepeatedPassword}" Watermark="Введите пароль еще раз" Height="35"
+                             CornerRadius="8"
+                             Background="#fafafa"
+                             BorderBrush="#ccc"
+                             BorderThickness="1"
+                             Margin="0,5,0,0">
+                    </TextBox>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="10" Margin="0,10,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Сохранить"
+                                    Command="{Binding UpdatePasswordFun}"
+                                    Background="#B44A45"
+                                    Foreground="White"
+                                    Width="100"
+                                    Height="35"
+                                    CornerRadius="6" />
+                            <Button Content="Отмена"
+                                    Command="{Binding CancelUpdatePassword}"
+                                    Background="#757575"
+                                    Foreground="White"
+                                    Width="100"
+                                    Height="35"
+                                    CornerRadius="6" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding ErrorMessage}"
+                                   FontSize="12"
+                                   Width="400"
+                                   FontWeight="Bold"
+                                   TextAlignment="Center"
+                                   Foreground="#B44A45" />
+                    </StackPanel>
+                </StackPanel>
+
+            </Border>
+        </Popup>
+        <Popup IsOpen="{Binding UpdateLogin}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="200">
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+
+                    <TextBlock Text="Обновление логина"
+                               FontSize="16"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+
+                    <TextBox Text="{Binding Login}" Watermark="Введите логин" Height="35"
+                             CornerRadius="8"
+                             Background="#fafafa"
+                             BorderBrush="#ccc"
+                             BorderThickness="1"
+                             Margin="0,5,0,0">
+                    </TextBox>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Сохранить"
+                                Command="{Binding UpdateLoginFun}"
+                                Background="#B44A45"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                        <Button Content="Отмена"
+                                Command="{Binding CancelUpdateLogin}"
+                                Background="#757575"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               FontSize="12"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="#B44A45" />
+                </StackPanel>
+
+            </Border>
+        </Popup>
+        <Popup IsOpen="{Binding IsDeleted}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="150">
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+
+                    <TextBlock Text="Вы уверены, что хотите удалить?"
+                               FontSize="16"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0,10,0,0">
+                        <Button Content="Да"
+                                Command="{Binding DeleteTeacher}"
+                                Background="#B44A45"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                        <Button Content="Нет"
+                                Command="{Binding CancelDeleteCommand}"
+                                Background="#757575"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                    </StackPanel>
+                </StackPanel>
+
+            </Border>
+        </Popup>
+        <DockPanel LastChildFill="False" Margin="0,0,0,10" VerticalAlignment="Center" Height="50">
+            <Border Background="#EFEFEF" CornerRadius="8" Margin="0,0,10,0" Height="40" VerticalAlignment="Center">
+                <TextBox Text="{Binding Query}"
+                         Watermark="Поиск..."
+                         Width="300"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         Padding="10,0"
+                         FontSize="14"
+                         VerticalContentAlignment="Center" />
+            </Border>
+            <Button Content="Добавить специальность"
+                    Command="{Binding AddTeacher}"
+                    Background="#B44A45"
+                    Foreground="White"
+                    Height="40"
+                    Width="220"
+                    CornerRadius="8"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    FontSize="14"
+                    Padding="10,0"
+                    DockPanel.Dock="Right"
+                    Margin="0,0,0,0" />
+        </DockPanel>
+
+        <Border Background="White" CornerRadius="12" Padding="20" BoxShadow="0 0 15 0 #20000000" Grid.Row="1">
+            <ScrollViewer>
+                <StackPanel Spacing="10">
+                    <Border Background="#B44A45" CornerRadius="8" Padding="10">
+                        <Grid ColumnDefinitions="*,*,*,*">
+                            <TextBlock Grid.Column="0" Text="Фамилия" Foreground="White" FontWeight="Bold"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Фамилия"
+                                       Foreground="White" FontWeight="Bold" TextWrapping="Wrap" />
+                            <TextBlock Grid.Column="2" Text="Отчество" Foreground="White" FontWeight="Bold"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Grid.Column="3" Text="Действия" Foreground="White" FontWeight="Bold"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </Border>
+                    <ItemsControl ItemsSource="{Binding Teachers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#fafafa" CornerRadius="6" Padding="10" Margin="0,5,0,0">
+                                    <Grid ColumnDefinitions="*,*,*,*">
+                                        <TextBlock Grid.Column="0" Margin="2"
+                                                   Text="{Binding Surname}"
+                                                   TextWrapping="Wrap" Foreground="#333" />
+                                        <TextBlock Grid.Column="1" Margin="2" Text="{Binding Name}"
+                                                   TextWrapping="Wrap" Foreground="#333" />
+                                        <TextBlock Grid.Column="2" Margin="2" Text="{Binding Patronymic}"
+                                                   TextWrapping="Wrap" Foreground="#333" />
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                            <StackPanel Orientation="Vertical">
+                                                <Button Content="Обновить пароль"
+                                                        Command="{Binding $parent[UserControl].((vm:TeachersViewModel)DataContext).Update}"
+                                                        Background="#B44A45"
+                                                        Foreground="White"
+                                                        CornerRadius="3"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        Padding="10,0"
+                                                        Margin="0,0,0,0">
+                                                    <Button.CommandParameter>
+                                                        <MultiBinding Converter="{StaticResource Converter}">
+                                                            <Binding />
+                                                            <Binding Source="{x:Static sys:Boolean.FalseString}" />
+                                                        </MultiBinding>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                                <Button Content="Редактировать"
+                                                        Command="{Binding $parent[UserControl].((vm:TeachersViewModel)DataContext).UpdateTeacher}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="White"
+                                                        Foreground="#B44A45"
+                                                        CornerRadius="3"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        Padding="10,0"
+                                                        Margin="0,0,0,0" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Vertical">
+                                                <Button Content="Обновить логин"
+                                                        Command="{Binding $parent[UserControl].((vm:TeachersViewModel)DataContext).Update}"
+                                                        Background="#B44A45"
+                                                        Foreground="White"
+                                                        CornerRadius="3"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        Padding="10,0"
+                                                        Margin="0,0,0,0">
+                                                    <Button.CommandParameter>
+                                                        <MultiBinding Converter="{StaticResource Converter}">
+                                                            <Binding />
+                                                            <Binding Source="{x:Static sys:Boolean.TrueString}" />
+                                                        </MultiBinding>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                                <Button Content="Удалить"
+                                                        Command="{Binding $parent[UserControl].((vm:TeachersViewModel)DataContext).ConfirmationOfDeletion}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="White"
+                                                        Foreground="#B44A45"
+                                                        CornerRadius="3"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        Padding="10,0"
+                                                        Margin="0,0,0,0" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

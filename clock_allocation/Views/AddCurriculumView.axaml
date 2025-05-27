@@ -1,0 +1,84 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.AddCurriculumView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:AddCurriculumViewModel">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Заголовок и поле года -->
+        <StackPanel Grid.Row="0" Spacing="5" Margin="0,0,0,10">
+            <Border Background="#B44A45" CornerRadius="4" Padding="10">
+                <TextBlock Text="{Binding Title}"
+                           Foreground="White"
+                           FontSize="16"
+                           FontWeight="Bold" />
+            </Border>
+
+            <TextBlock Text="{Binding Year}"
+                     FontSize="14"
+                     Padding="8"/>
+        </StackPanel>
+            <Border Grid.Row="1" CornerRadius="4"
+                    BorderBrush="#e0e0e0"
+                    BorderThickness="1"
+                    Padding="5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ContentPresenter Content="{Binding MainGrid}" />
+                </ScrollViewer>
+            </Border>
+        <Popup Grid.Row="1" IsOpen="{Binding IsLoading}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="150">
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+
+                    <TextBlock Text="{Binding Message}"
+                               FontSize="16"
+                               TextWrapping="Wrap"
+                               Width="400"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+                </StackPanel>
+
+            </Border>
+        </Popup>
+
+        <!-- Панель кнопок -->
+        <Border Grid.Row="2"
+                Background="#f5f5f5"
+                Padding="10">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="15">
+                <Button Content="Отмена"
+                        Command="{Binding Cancel}"
+                        Width="120"
+                        Height="40"
+                        FontSize="14"
+                        Background="White"
+                        BorderBrush="#B44A45"
+                        BorderThickness="1"
+                        Foreground="#B44A45"
+                        CornerRadius="4" />
+
+                <Button Content="Сохранить"
+                        Command="{Binding  Save}"
+                        Width="120"
+                        Height="40"
+                        FontSize="14"
+                        Background="#B44A45"
+                        Foreground="White"
+                        CornerRadius="4"
+                        BorderThickness="0" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

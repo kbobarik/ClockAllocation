@@ -1,0 +1,139 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.AddModuleAndSubjectView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:AddModuleAndSubjectViewModel"
+             xmlns:local="clr-namespace:clock_allocation.Models"
+             xmlns:global="clr-namespace:">
+    
+    <UserControl.Styles>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#B44A45"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Opacity" Value="0.9"/>
+        </Style>
+        
+        <Style Selector="Button.primary:pointerover">
+            <Setter Property="Background" Value="#9C3A3A"/>
+        </Style>
+        
+        <Style Selector="Button.secondary:pointerover">
+            <Setter Property="Background" Value="#F8E1DF"/>
+        </Style>
+        
+        <Style Selector="TreeView">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="CornerRadius" Value="10"></Setter>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        
+        <Style Selector="TreeViewItem">
+            <Setter Property="Margin" Value="0 2"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="10" RowDefinitions="Auto,Auto,*,Auto">
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="#B44A45" CornerRadius="4" Padding="10" Margin="0 0 0 10">
+            <TextBlock Text="Модули и предметы" 
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+        </Border>
+        
+        <!-- Поле года -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0 0 0 15">
+            <TextBlock Text="Учебный год:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Year}" Watermark="Введите год" Width="100"/>
+        </StackPanel>
+        <Popup Grid.Row="2" IsOpen="{Binding IsLoading}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="150">
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+
+                    <TextBlock Text="{Binding Message}"
+                               FontSize="16"
+                               Width="280"
+                               TextWrapping="Wrap"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+                </StackPanel>
+
+            </Border>
+        </Popup>
+        <!-- Основное содержимое -->
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" IsVisible="{Binding RootModules.Count}">
+            <StackPanel Spacing="10">
+                <TreeView ItemsSource="{Binding RootModules}">
+                    <TreeView.DataTemplates>
+                        <TreeDataTemplate DataType="{x:Type local:ModuleCurriculum}" 
+                                        ItemsSource="{Binding Items}">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <!-- Кнопка удаления -->
+                                <Button Content="-" 
+                                       Command="{Binding $parent[UserControl].((vm:AddModuleAndSubjectViewModel)DataContext).DeleteItem}" 
+                                       CommandParameter="{Binding}"
+                                       Background="#da7772"
+                                       Width="30"/>
+                                
+                                <!-- Поля ввода -->
+                                <TextBox Text="{Binding Code}" Watermark="Код" Width="120"/>
+                                <TextBox Text="{Binding Title}" Watermark="Название" Width="250"/>
+                                
+                                <!-- Кнопки действий -->
+                                <Button Content="Добавить подмодуль" 
+                                       Command="{Binding $parent[UserControl].((vm:AddModuleAndSubjectViewModel)DataContext).AddSubModule}"
+                                       CommandParameter="{Binding}"
+                                       Classes="primary"
+                                       IsEnabled="{Binding HasSubModules}"
+                                       MinWidth="150"/>
+                                       
+                                <Button Content="Добавить предмет" 
+                                       Command="{Binding $parent[UserControl].((vm:AddModuleAndSubjectViewModel)DataContext).AddSubject}"
+                                       CommandParameter="{Binding}"
+                                       IsEnabled="{Binding HasSubjects}"
+                                       Classes="secondary"
+                                       MinWidth="150"/>
+                            </StackPanel>
+                        </TreeDataTemplate>
+                    </TreeView.DataTemplates>
+                </TreeView>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Панель кнопок -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0 15 0 0">
+            <Button Content="Добавить модуль" Command="{Binding AddModule}" Classes="secondary" />
+            <Button Content="Сохранить" Command="{Binding SaveAsync}" Classes="primary"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

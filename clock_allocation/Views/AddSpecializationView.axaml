@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.AddSpecializationView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:AddSpecializationViewModel">
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="20">
+        <TextBlock Text="{Binding Title}"
+                   FontSize="24"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+              Margin="0,0,0,20">
+            <TextBlock Text="Код:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Specialization.Code, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Название:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Specialization.Title, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Направление:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Specialization.Direction, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Квалификация:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBox Text="{Binding Specialization.Qualification, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Margin="5" />
+
+            <TextBlock Text="Уровень образования:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" SelectedItem="{Binding Specialization.EducationLevel}"
+                      ItemsSource="{Binding EducationLevels}">
+            </ComboBox>
+
+            <TextBlock Text="Форма обучения:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" SelectedItem="{Binding Specialization.FormOfEducation}"
+                      ItemsSource="{Binding FormOfEducations}">
+            </ComboBox>
+
+            <TextBlock Text="Срок обучения:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="6" Grid.Column="1" Margin="5"
+                      SelectedItem="{Binding Specialization.DurationOfTraining}"
+                      ItemsSource="{Binding DurationOfTrainings}">
+            </ComboBox>
+            <TextBlock Text="Язык обучения:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="7" Grid.Column="1" Margin="5"
+                      SelectedItem="{Binding Specialization.IdLanguageNavigation}" ItemsSource="{Binding Language}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}"></TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+        </Grid>
+        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="DarkRed"></TextBlock>
+        <Button Grid.Row="3" Content="Сохранить"
+                Command="{Binding Save}"
+                HorizontalAlignment="Center"
+                Width="150"
+                Height="40"
+                Background="#B44A45"
+                Foreground="White"
+                BorderThickness="0"
+                CornerRadius="8" />
+    </Grid>
+</UserControl>

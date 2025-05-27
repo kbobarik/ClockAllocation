@@ -1,0 +1,79 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.ModuleAndSubjectView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:ModuleAndSubjectViewModel"
+             xmlns:conv="clr-namespace:clock_allocation.Resources"
+             xmlns:models="clr-namespace:clock_allocation.Models">
+    <UserControl.Resources>
+        <conv:IsBackgroundYearConverter x:Key="BackgroundYearConverter" />
+        <conv:IsForegroundYearConverter x:Key="ForegroundYearConverter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="2*,*">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Orientation="Horizontal">
+                <Border Width="130" Height="50"  Margin="2">
+                    <Button Background="#B44A45" Foreground="White"  Command="{Binding ToAddCurriculum}">
+                        <TextBlock Text="+" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Foreground="White"   />
+                    </Button>
+                </Border>
+                <ItemsControl ItemsSource="{Binding Years}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="130" Height="50" Margin="2">
+                                <Button
+                                    Command="{Binding $parent[UserControl].((vm:ModuleAndSubjectViewModel)DataContext).SelectByYear}"
+                                    CommandParameter="{Binding}">
+                                    <Button.Background>
+                                        <MultiBinding Converter="{StaticResource BackgroundYearConverter}">
+                                            <Binding />
+                                            <Binding
+                                                Path="$parent[UserControl].((vm:ModuleAndSubjectViewModel)DataContext).CurrentYear" />
+                                        </MultiBinding>
+                                    </Button.Background>
+                                    <Button.Foreground>
+                                        <MultiBinding Converter="{StaticResource ForegroundYearConverter}">
+                                            <Binding />
+                                            <Binding
+                                                Path="$parent[UserControl].((vm:ModuleAndSubjectViewModel)DataContext).CurrentYear" />
+                                        </MultiBinding>
+                                    </Button.Foreground>
+                                    <TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+
+            </StackPanel>
+        </ScrollViewer>
+        <AutoCompleteBox Grid.Column="1" Grid.Row="0"
+                         x:Name="SpecializationBoxModule"
+                         ItemsSource="{Binding Specializations}"
+                         Watermark="Введите специальность"
+                         MinimumPrefixLength="0"
+                         FilterMode="Custom"
+                         ItemFilter="{Binding SpecializationFilter}"
+                         SelectedItem="{Binding CurrentSpecialization}"
+                         IsTextCompletionEnabled="True">
+            <AutoCompleteBox.ItemTemplate>
+                <DataTemplate DataType="models:Specialization">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Qualification}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </AutoCompleteBox.ItemTemplate>
+        </AutoCompleteBox>
+        <UserControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding UserControl}"></UserControl>
+    </Grid>
+</UserControl>
