@@ -39,17 +39,16 @@
     <ScrollViewer>
         <StackPanel Margin="20" Spacing="20">
             <TextBlock Text="Список групп" Classes="header"/>
-            <Grid ColumnDefinitions="*,*,*">
-                <TextBlock Text="Год поступления" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
+            <Grid ColumnDefinitions="*,*">
+                <TextBlock Text="Название" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
                 <TextBlock Grid.Column="1" Text="Финансовая основа" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
-                <TextBlock Grid.Column="2" Text="Количество набранных групп" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
             </Grid>
             <ItemsControl ItemsSource="{Binding Groups}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Classes="card">
-                            <Grid ColumnDefinitions="*,*,*">
-                                <TextBlock Text="{Binding YearOfAdmission}" 
+                            <Grid ColumnDefinitions="*,*">
+                                <TextBlock Text="{Binding }" 
                                            Classes="item-text"
                                            TextAlignment="Center" TextWrapping="Wrap"
                                            Width="100"/>
@@ -58,13 +57,6 @@
                                            Classes="item-text"
                                            TextAlignment="Center" TextWrapping="Wrap"
                                            Width="200"/>
-                                
-                                <TextBlock Grid.Column="2" Text="{Binding CountGroup}" 
-                                           Classes="item-text"
-                                           Foreground="#B44A45"
-                                           TextAlignment="Center" TextWrapping="Wrap"
-                                           FontWeight="Bold"
-                                           Width="100"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -72,6 +64,7 @@
             </ItemsControl>
             
             <Button Content="Добавить группу"
+                    Command="{Binding AddNewGroup}"
                     HorizontalAlignment="Right"
                     Background="#B44A45"
                     Foreground="White"

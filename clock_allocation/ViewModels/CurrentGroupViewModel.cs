@@ -1,49 +1,38 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using clock_allocation.Models;
+using clock_allocation.Views;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 
 namespace clock_allocation.ViewModels;
 
 public class CurrentGroupViewModel : ViewModelBase
 {
-    private ObservableCollection<GroupSummaryDto> _groups;
+    private ObservableCollection<Group> _groups;
+    private int _idSpecailization;
+    private int yaer;
 
-    public ObservableCollection<GroupSummaryDto> Groups
+    public ObservableCollection<Group> Groups
     {
         get => _groups;
         set => this.RaiseAndSetIfChanged(ref _groups, value);
     }
 
-    public CurrentGroupViewModel(int idSpecialisation)
+    public CurrentGroupViewModel(int idSpecialisation,int Year)
     {
+        _idSpecailization = idSpecialisation;
+        yaer = Year;
         var result = db.Groups
-            .GroupBy(g => new
-            {
-                g.IdGroup,
-                g.YearOfAdmission,
-                g.IdSpecialization,
-                g.FormOfEducation
-            })
-            .Select(g => new GroupSummaryDto
-            {
-                IdGroup = g.Key.IdGroup,
-                CountGroup = g.Max(x => x.StreamNumber),
-                YearOfAdmission = g.Key.YearOfAdmission,
-                IdSpecialization = g.Key.IdSpecialization,
-                FormOfEducation = g.Key.FormOfEducation
-            })
-            .Where(g => g.IdSpecialization == idSpecialisation)
+            .Where(g => g.IdSpecialization == idSpecialisation && g.YearOfAdmission == Year)
+            .Include(x=>x.IdSpecializationNavigation)
             .ToList();
-        Groups = new ObservableCollection<GroupSummaryDto>(result);
+        Groups = new ObservableCollection<Group>(result);
     }
-}
 
-public class GroupSummaryDto
-{
-    public int IdGroup { get; set; }
-    public int CountGroup { get; set; }
-    public int YearOfAdmission { get; set; }
-    public int IdSpecialization { get; set; }
-    public string FormOfEducation { get; set; }
+    public void AddNewGroup()
+    {
+        var specialization = db.Specializations.FirstOrDefault(x=>x.IdSpecialization == _idSpecailization);
+        MainViewModel.Instance.UserControl = new AddGroupView(specialization, yaer);
+    }
 }

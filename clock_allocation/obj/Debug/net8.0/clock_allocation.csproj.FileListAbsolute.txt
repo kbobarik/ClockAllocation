@@ -171,3 +171,4 @@ C:\Users\User\RiderProjects\clock_allocation\clock_allocation\obj\Debug\net8.0\r
 C:\Users\User\RiderProjects\clock_allocation\clock_allocation\obj\Debug\net8.0\clock_al.AC36CCAB.Up2Date
 C:\Users\User\RiderProjects\clock_allocation\clock_allocation\obj\Debug\net8.0\clock_allocation.genruntimeconfig.cache
 C:\Users\User\RiderProjects\clock_allocation\clock_allocation\obj\Debug\net8.0\ref\clock_allocation.dll
+C:\Users\User\RiderProjects\clock_allocation\clock_allocation\obj\Debug\net8.0\clock_allocation.sourcelink.json

@@ -226,7 +226,7 @@
                          FontSize="14"
                          VerticalContentAlignment="Center" />
             </Border>
-            <Button Content="Добавить специальность"
+            <Button Content="Добавить преподавателя"
                     Command="{Binding AddTeacher}"
                     Background="#B44A45"
                     Foreground="White"

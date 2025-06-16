@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,6 +9,7 @@ public partial class Subject : INotifyPropertyChanged
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int IdSubject { get; set; }
+    public virtual ICollection<TeachingLoad> TeachingLoads { get; set; } = new List<TeachingLoad>();
 
     private string _title;
 
@@ -159,6 +161,8 @@ public partial class Subject : INotifyPropertyChanged
         LaboratoryAndPracticalExercises +
         CourseDesign;
 
+    [NotMapped] public bool Splitting;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged(string propertyName) =>
@@ -166,6 +170,12 @@ public partial class Subject : INotifyPropertyChanged
 
     public override string ToString()
     {
-        return Title;
+        var title = "";
+        if (!string.IsNullOrEmpty(Code))
+        {
+            title = $"{Code}";
+        }
+        title += " "+Title;
+        return title;
     }
 }

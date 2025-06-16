@@ -36,22 +36,19 @@ public partial class ClockAllocationContext : DbContext
     public virtual DbSet<TeachingLoad> TeachingLoads { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-    
-    public DbSet<AcademicPlanRecord> AcademicPlanRecords { get; set; }
-    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=clock_allocation;Username=postgres;Password=12345");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql(
+            "Host=localhost;Port=5432;Database=clock_allocation;Username=postgres;Password=12345");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AcademicPlanRecord>(entity =>
         {
-            entity.HasNoKey();    // <- Сказать, что у этой сущности нет ключа
-            entity.ToView(null);  // <- Сказать, что это не таблица и не представление
+            entity.HasNoKey();
+            entity.ToView(null);
         });
-        
         modelBuilder.Entity<Curriculum>(entity =>
         {
             entity.HasKey(e => e.IdCurriculum).HasName("curriculum_pk");
@@ -75,7 +72,8 @@ public partial class ClockAllocationContext : DbContext
             entity.ToTable("form_of_intermediate_certification");
 
             entity.Property(e => e.IdFormOfIntermediateCertification)
-                .HasDefaultValueSql("nextval('form_of_intermediate_certific_id_form_of_intermediate_certi_seq'::regclass)")
+                .HasDefaultValueSql(
+                    "nextval('form_of_intermediate_certific_id_form_of_intermediate_certi_seq'::regclass)")
                 .HasColumnName("id_form_of_intermediate_certification");
             entity.Property(e => e.Title)
                 .HasColumnType("character varying")
@@ -89,11 +87,13 @@ public partial class ClockAllocationContext : DbContext
             entity.ToTable("group");
 
             entity.Property(e => e.IdGroup).HasColumnName("id_group");
+            entity.Property(e => e.FormOfEducation)
+                .HasDefaultValueSql("'Бюджет'::character varying")
+                .HasColumnType("character varying")
+                .HasColumnName("form_of_education");
             entity.Property(e => e.IdSpecialization).HasColumnName("id_specialization");
             entity.Property(e => e.StreamNumber).HasColumnName("stream_number");
             entity.Property(e => e.YearOfAdmission).HasColumnName("year_of_admission");
-            entity.Property(e=>e.FormOfEducation).HasColumnName("form_of_education");
-            entity.Property(e=>e.Splitting).HasColumnName("splitting");
 
             entity.HasOne(d => d.IdSpecializationNavigation).WithMany(p => p.Groups)
                 .HasForeignKey(d => d.IdSpecialization)
@@ -171,7 +171,6 @@ public partial class ClockAllocationContext : DbContext
 
             entity.HasOne(d => d.IdFormOfIntermediateCertificationNavigation).WithMany(p => p.Semesters)
                 .HasForeignKey(d => d.IdFormOfIntermediateCertification)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("semester_id_form_of_intermediate_certification_fkey");
 
             entity.HasOne(d => d.IdSubjectNavigation).WithMany(p => p.Semesters)
@@ -241,7 +240,6 @@ public partial class ClockAllocationContext : DbContext
 
             entity.HasOne(d => d.IdModuleNavigation).WithMany(p => p.Subjects)
                 .HasForeignKey(d => d.IdModule)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("subject_id_module_fkey");
         });
 
@@ -252,21 +250,21 @@ public partial class ClockAllocationContext : DbContext
             entity.ToTable("teacher");
 
             entity.Property(e => e.IdTeacher).HasColumnName("id_teacher");
+            entity.Property(e => e.Login)
+                .HasColumnType("character varying")
+                .HasColumnName("login");
             entity.Property(e => e.Name)
                 .HasColumnType("character varying")
                 .HasColumnName("name");
+            entity.Property(e => e.Password)
+                .HasColumnType("character varying")
+                .HasColumnName("password");
             entity.Property(e => e.Patronymic)
                 .HasColumnType("character varying")
                 .HasColumnName("patronymic");
             entity.Property(e => e.Surname)
                 .HasColumnType("character varying")
                 .HasColumnName("surname");
-            entity.Property(e => e.Login)
-                .HasColumnType("character varying")
-                .HasColumnName("login");
-            entity.Property(e => e.Password)
-                .HasColumnType("character varying")
-                .HasColumnName("password");
         });
 
         modelBuilder.Entity<TeachingLoad>(entity =>
@@ -276,14 +274,56 @@ public partial class ClockAllocationContext : DbContext
             entity.ToTable("teaching_load");
 
             entity.Property(e => e.IdTeachingLoad).HasColumnName("id_teaching_load");
+            entity.Property(e => e.Billing)
+                .HasDefaultValue(0)
+                .HasColumnName("billing");
+            entity.Property(e => e.CheckingCoursework)
+                .HasDefaultValue(0)
+                .HasColumnName("checking_coursework");
+            entity.Property(e => e.Consultations)
+                .HasDefaultValue(0)
+                .HasColumnName("consultations");
+            entity.Property(e => e.CourseDesign)
+                .HasDefaultValue(0)
+                .HasColumnName("course_design");
+            entity.Property(e => e.Exam)
+                .HasDefaultValue(0)
+                .HasColumnName("exam");
+            entity.Property(e => e.HoursPerWeek)
+                .HasDefaultValue(0)
+                .HasColumnName("hours_per_ week");
             entity.Property(e => e.IdGroup).HasColumnName("id_group");
             entity.Property(e => e.IdSemester).HasColumnName("id_semester");
+            entity.Property(e => e.IdSubject).HasColumnName("id_subject");
             entity.Property(e => e.IdTeacher).HasColumnName("id_teacher");
+            entity.Property(e => e.IndependentWork)
+                .HasDefaultValue(0)
+                .HasColumnName("independent_work");
+            entity.Property(e => e.Laboratory)
+                .HasDefaultValue(0)
+                .HasColumnName("laboratory");
+            entity.Property(e => e.Lectures)
+                .HasDefaultValue(0)
+                .HasColumnName("lectures");
+            entity.Property(e => e.MaximumWorkload)
+                .HasDefaultValue(0)
+                .HasColumnName("maximum_workload");
+            entity.Property(e => e.ReviewAndLecture)
+                .HasDefaultValue(0)
+                .HasColumnName("review_and_lecture");
             entity.Property(e => e.Split)
                 .HasDefaultValue(false)
                 .HasColumnName("split");
-            entity.Property(e => e.Year)
-                .HasColumnName("year");
+            entity.Property(e => e.TotalYear)
+                .HasDefaultValue(0)
+                .HasColumnName("total_year");
+            entity.Property(e => e.AcademicHoursPerYear)
+                .HasDefaultValue(0)
+                .HasColumnName("academic_hours_per_year");
+            entity.Property(e => e.Year).HasColumnName("year");
+            entity.Property(e => e.СonsultationsPayment)
+                .HasDefaultValue(0)
+                .HasColumnName("сonsultations_payment");
 
             entity.HasOne(d => d.IdGroupNavigation).WithMany(p => p.TeachingLoads)
                 .HasForeignKey(d => d.IdGroup)
@@ -295,12 +335,15 @@ public partial class ClockAllocationContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("teaching_load_id_semester_fkey");
 
+            entity.HasOne(d => d.IdSubjectNavigation).WithMany(p => p.TeachingLoads)
+                .HasForeignKey(d => d.IdSubject)
+                .HasConstraintName("teaching_load_subject_fk");
+
             entity.HasOne(d => d.IdTeacherNavigation).WithMany(p => p.TeachingLoads)
                 .HasForeignKey(d => d.IdTeacher)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("teaching_load_id_teacher_fkey");
         });
-
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.IdUser).HasName("users_pk");

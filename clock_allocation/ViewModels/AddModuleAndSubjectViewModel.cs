@@ -30,11 +30,13 @@ public class AddModuleAndSubjectViewModel : ViewModelBase
         get => _isLoading;
         set => this.RaiseAndSetIfChanged(ref _isLoading, value);
     }
+
     public string Message
     {
         get => _message;
         set => this.RaiseAndSetIfChanged(ref _message, value);
     }
+
     public ObservableCollection<ModuleCurriculum> RootModules
     {
         get => _rootModules;
@@ -140,6 +142,7 @@ public class AddModuleAndSubjectViewModel : ViewModelBase
 
         return rootModules;
     }
+
     private ModuleCurriculum ConvertModuleToCurriculum(Module module)
     {
         var moduleCurriculum = new ModuleCurriculum()
@@ -274,6 +277,7 @@ public class AddModuleAndSubjectViewModel : ViewModelBase
 
         return null;
     }
+
     private bool ValidateCurriculum()
     {
         if (Year is >= 2000 and <= 2100)
@@ -293,109 +297,209 @@ public class AddModuleAndSubjectViewModel : ViewModelBase
             Message = "Укажите корректный год (2000-2100)";
             return false;
         }
-       
     }
 
     public async Task SaveAsync()
-{
-    try
     {
-        if (!ValidateCurriculum())
+        try
         {
-            IsLoading = true;
-            await Task.Delay(3000);
-            IsLoading = false;
-            return;
-        }
-        IsLoading = true;
-        Message = "Идет сохранение";
-        await using var dbContext = new ClockAllocationContext();
-
-        if (!_isUpdate)
-        {
-            // Создаем новый учебный план
-            _curriculum = new Curriculum
+            if (!ValidateCurriculum())
             {
-                IdSpecialization = _specialization.IdSpecialization,
-                Year = _year,
-                Modules = new ObservableCollection<Module>()
-            };
-            dbContext.Curricula.Add(_curriculum);
-        }
-        else
-        {
-            // Загружаем существующий учебный план с полной иерархией
-            _curriculum = await dbContext.Curricula
-                .Include(c => c.Modules)
-                    .ThenInclude(m => m.InverseIdHeadModuleNavigation)
-                .Include(c => c.Modules)
-                    .ThenInclude(m => m.Subjects)
-                        .ThenInclude(s => s.Semesters)
-                .FirstOrDefaultAsync(c => c.IdCurriculum == _curriculum.IdCurriculum);
-
-            if (_curriculum == null)
-            {
-                Debug.WriteLine("Учебный план не найден");
+                IsLoading = true;
+                await Task.Delay(3000);
+                IsLoading = false;
                 return;
             }
 
-            // Удаляем предметы и семестры вручную перед удалением модулей
-            foreach (var module in _curriculum.Modules.ToList())
+            IsLoading = true;
+            Message = "Идет сохранение";
+            await using var dbContext = new ClockAllocationContext();
+
+            // Начинаем транзакцию
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+
+            try
             {
-                // Удаляем семестры предметов
-                foreach (var subject in module.Subjects.ToList())
+                if (!_isUpdate)
                 {
-                    dbContext.Semesters.RemoveRange(subject.Semesters);
-                    dbContext.Subjects.Remove(subject);
-                }
-                
-                // Удаляем подмодули
-                foreach (var subModule in module.InverseIdHeadModuleNavigation.ToList())
-                {
-                    // Удаляем предметы подмодулей
-                    foreach (var subject in subModule.Subjects.ToList())
+                    // Создаем и сохраняем новый учебный план
+                    _curriculum = new Curriculum
                     {
-                        dbContext.Semesters.RemoveRange(subject.Semesters);
-                        dbContext.Subjects.Remove(subject);
-                    }
-                    dbContext.Modules.Remove(subModule);
+                        IdSpecialization = _specialization.IdSpecialization,
+                        Year = _year,
+                        Modules = new ObservableCollection<Module>()
+                    };
+                    dbContext.Curricula.Add(_curriculum);
+                    await dbContext.SaveChangesAsync(); // Важно: сохраняем, чтобы получить ID
                 }
-                
-                dbContext.Modules.Remove(module);
+                else
+                {
+                    // Загружаем существующий учебный план
+                    _curriculum = await dbContext.Curricula
+                        .Include(c => c.Modules)
+                        .ThenInclude(m => m.InverseIdHeadModuleNavigation)
+                        .Include(c => c.Modules)
+                        .ThenInclude(m => m.Subjects)
+                        .ThenInclude(s => s.Semesters)
+                        .FirstOrDefaultAsync(c => c.IdCurriculum == _curriculum.IdCurriculum);
+
+                    if (_curriculum == null)
+                    {
+                        Message = "Учебный план не найден";
+                        return;
+                    }
+
+                    // Удаляем старые данные
+                    var modulesToDelete = _curriculum.Modules.ToList();
+                    foreach (var module in modulesToDelete)
+                    {
+                        // Удаляем подмодули рекурсивно
+                        await DeleteModuleWithChildren(dbContext, module);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    _curriculum.Modules.Clear();
+                }
+
+                // Создаем новые модули и предметы
+                foreach (var moduleCurriculum in RootModules)
+                {
+                    var module = new Module
+                    {
+                        Code = moduleCurriculum.Code,
+                        Title = moduleCurriculum.Title,
+                        Subjects = new ObservableCollection<Subject>(),
+                        InverseIdHeadModuleNavigation = new ObservableCollection<Module>(),
+                        IdCurriculum = _curriculum.IdCurriculum // Используем сохраненный ID
+                    };
+
+                    await ProcessModuleItemsAsync(dbContext, module, moduleCurriculum,
+                        _specialization.DurationOfTraining);
+                    _curriculum.Modules.Add(module);
+                }
+
+                await dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                IsLoading = false;
+                MainViewModel.Instance.UserControl = new ModuleAndSubjectView();
             }
-            
-            await dbContext.SaveChangesAsync();
-            _curriculum.Modules.Clear();
-        }
-
-        // Строим новую иерархию модулей и предметов
-        foreach (var moduleCurriculum in RootModules)
-        {
-            var module = new Module
+            catch (Exception ex)
             {
-                Code = moduleCurriculum.Code,
-                Title = moduleCurriculum.Title,
-                Subjects = new ObservableCollection<Subject>(),
-                InverseIdHeadModuleNavigation = new ObservableCollection<Module>(),
-                IdCurriculum = _curriculum.IdCurriculum
-            };
+                await transaction.RollbackAsync();
+                Debug.WriteLine($"Ошибка при сохранении: {ex.Message}");
+                Message = $"Ошибка: {ex.Message}";
+                IsLoading = false;
+                throw;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Ошибка: {ex.Message}");
+            Message = "Произошла ошибка при сохранении";
+            IsLoading = false;
+        }
+    }
 
-            ProcessModuleItems(module, moduleCurriculum, _specialization.DurationOfTraining);
-            _curriculum.Modules.Add(module);
+// Вспомогательный метод для рекурсивного удаления модулей
+    private async Task DeleteModuleWithChildren(ClockAllocationContext dbContext, Module module)
+    {
+        // Сначала удаляем подмодули
+        foreach (var subModule in module.InverseIdHeadModuleNavigation.ToList())
+        {
+            await DeleteModuleWithChildren(dbContext, subModule);
         }
 
-        await dbContext.SaveChangesAsync();
-        IsLoading = false;
-        MainViewModel.Instance.UserControl = new ModuleAndSubjectView();
+        // Затем удаляем предметы и семестры
+        foreach (var subject in module.Subjects.ToList())
+        {
+            dbContext.Semesters.RemoveRange(subject.Semesters);
+            dbContext.Subjects.Remove(subject);
+        }
+
+        // И наконец сам модуль
+        dbContext.Modules.Remove(module);
     }
-    catch (Exception ex)
+
+// Асинхронная обработка элементов модуля
+    private async Task ProcessModuleItemsAsync(ClockAllocationContext dbContext, Module parentModule,
+        ModuleCurriculum parentModuleCurriculum, string durationOfTraining)
     {
-        Debug.WriteLine($"Ошибка при сохранении: {ex.Message}");
-        Message = ex.Message;
-        await Task.Delay(3000);
-        IsLoading = false;
+        foreach (var item in parentModuleCurriculum.Items)
+        {
+            if (parentModuleCurriculum.HasSubModules)
+            {
+                var subModule = new Module
+                {
+                    Code = item.Code,
+                    Title = item.Title,
+                    Subjects = new ObservableCollection<Subject>(),
+                    InverseIdHeadModuleNavigation = new ObservableCollection<Module>(),
+                    IdHeadModule = parentModule.IdModule,
+                    IdCurriculum = parentModule.IdCurriculum
+                };
+
+                if (item.Items.Any())
+                {
+                    await ProcessModuleItemsAsync(dbContext, subModule, item, durationOfTraining);
+                }
+
+                parentModule.InverseIdHeadModuleNavigation.Add(subModule);
+            }
+            else if (parentModuleCurriculum.HasSubjects)
+            {
+                var subject = new Subject
+                {
+                    Code = item.Code,
+                    Title = item.Title,
+                    IdModule = parentModule.IdModule,
+                    CourseDesign = item.OriginalSubject?.CourseDesign ?? 0,
+                    Lessons = item.OriginalSubject?.Lessons ?? 0,
+                    LaboratoryAndPracticalExercises = item.OriginalSubject?.LaboratoryAndPracticalExercises ?? 0,
+                    Semesters = new ObservableCollection<Semester>()
+                };
+
+                await AddSemestersForSubjectAsync(dbContext, subject,
+                    item.OriginalSubject?.Semesters, durationOfTraining);
+
+                parentModule.Subjects.Add(subject);
+            }
+        }
     }
-}
+
+// Асинхронное добавление семестров
+    private async Task AddSemestersForSubjectAsync(ClockAllocationContext dbContext, Subject subject,
+        ObservableCollection<Semester> semesters, string durationOfTraining)
+    {
+        if (semesters != null && semesters.Any())
+        {
+            foreach (var semester in semesters)
+            {
+                subject.Semesters.Add(new Semester
+                {
+                    Number = semester.Number,
+                    IdFormOfIntermediateCertification = semester.IdFormOfIntermediateCertification,
+                    Lessons = semester.Lessons,
+                    Practice = semester.Practice,
+                    IndependentWork = semester.IndependentWork,
+                    Consultations = semester.Consultations,
+                    IntermediateCertification = semester.IntermediateCertification
+                });
+            }
+        }
+        else
+        {
+            var countSemester = GetSemesterCount(durationOfTraining);
+            for (var i = 1; i <= countSemester; i++)
+            {
+                subject.Semesters.Add(new Semester
+                {
+                    Number = i,
+                    IdFormOfIntermediateCertification = 4 // Значение по умолчанию
+                });
+            }
+        }
+    }
 
     private void ProcessModuleItems(Module parentModule,
         ModuleCurriculum parentModuleCurriculum,

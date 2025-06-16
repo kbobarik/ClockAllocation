@@ -5,6 +5,7 @@
       <map>
         <entry key="clock_allocation/App.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/AddCurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/AddGroupView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/AddModuleAndSubject.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/AddModuleAndSubjectView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/AddSpecializationView.axaml" value="clock_allocation/clock_allocation.csproj" />
@@ -17,6 +18,7 @@
         <entry key="clock_allocation/Views/CurrentGroup.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/CurrentGroupView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/CurrentModuleAndSubjectView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/CurrentTeacherLoadingView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/CurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/GroupView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/MainView.axaml" value="clock_allocation/clock_allocation.csproj" />
@@ -25,6 +27,8 @@
         <entry key="clock_allocation/Views/SpecializationView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/TeachersView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/TeachingLoadingView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/UpdateTeacherLoadingView.axaml" value="clock_allocation/clock_allocation.csproj" />
+        <entry key="clock_allocation/Views/UpdateTeachingLoadView.axaml" value="clock_allocation/clock_allocation.csproj" />
         <entry key="clock_allocation/Views/СurriculumView.axaml" value="clock_allocation/clock_allocation.csproj" />
       </map>
     </option>

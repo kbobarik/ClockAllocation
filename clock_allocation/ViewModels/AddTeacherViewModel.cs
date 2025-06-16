@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using clock_allocation.Models;
 using clock_allocation.Views;
@@ -39,6 +40,7 @@ public class AddTeacherViewModel:ViewModelBase
         get => _title;
         set =>this.RaiseAndSetIfChanged(ref _title, value);
     }
+
     
 
     public AddTeacherViewModel()

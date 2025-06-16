@@ -13,6 +13,8 @@ public class GroupViewModel : ViewModelBase
     private ObservableCollection<Specialization> _specializations;
     private Specialization _currentSpecialization;
     private UserControl _userControl;
+    private ObservableCollection<int> _years;
+    private int currentYear;
 
     public UserControl UserControl
     {
@@ -33,6 +35,18 @@ public class GroupViewModel : ViewModelBase
         get=>_specializations;
         set=>this.RaiseAndSetIfChanged(ref _specializations, value);
     }
+
+    public ObservableCollection<int> Years
+    {
+        get=>_years;
+        set=>this.RaiseAndSetIfChanged(ref _years, value);
+    }
+
+    public int CurrentYear
+    {
+        get => currentYear;
+        set=>this.RaiseAndSetIfChanged(ref currentYear, value);
+    }
     public AutoCompleteFilterPredicate<object?> SpecializationFilter => (search, item) =>
     {
         if (item is Specialization spec && !string.IsNullOrEmpty(search))
@@ -46,10 +60,43 @@ public class GroupViewModel : ViewModelBase
     {
         Specializations = new ObservableCollection<Specialization>(db.Specializations.OrderBy(x=>x.IdSpecialization).ToList());
         CurrentSpecialization = Specializations.FirstOrDefault();
+        var countCourses = CurrentSpecialization.DurationOfTraining switch
+        {
+            "3 года 10 месяцев" => 4,
+            "2 года 10 месяцев" => 3,
+            "1 год 10 месяцев" => 2,
+            _ => 0
+        };
+        Years = new ObservableCollection<int>(db.Groups.Where(x=>x.IdSpecialization == CurrentSpecialization.IdSpecialization&&x.YearOfAdmission >= DateTime.Now.Year-countCourses).Select(x => x.YearOfAdmission).OrderBy(x=>x).Distinct().ToList());
+        CurrentYear = Years.FirstOrDefault();
+        UserControl = new CurrentGroupView(CurrentSpecialization.IdSpecialization,CurrentYear );
     }
 
+    public void SelectByYear(int year)
+    {
+        CurrentYear = year;
+        UserControl = new CurrentGroupView(CurrentSpecialization.IdSpecialization,CurrentYear );
+    }
     private void UpdateCurrentGroup()
     {
-        UserControl = new CurrentGroupView(CurrentSpecialization.IdSpecialization);
+        if (CurrentSpecialization != null)
+        {
+            
+            var countCourses = CurrentSpecialization.DurationOfTraining switch
+            {
+                "3 года 10 месяцев" => 4,
+                "2 года 10 месяцев" => 3,
+                "1 год 10 месяцев" => 2,
+                _ => 0
+            };
+            Years = new ObservableCollection<int>(db.Groups.Where(x=>x.IdSpecialization == CurrentSpecialization.IdSpecialization&&x.YearOfAdmission >= DateTime.Now.Year-countCourses).Select(x => x.YearOfAdmission).OrderBy(x=>x).Distinct().ToList());
+            CurrentYear = Years.FirstOrDefault();
+            UserControl = new CurrentGroupView(CurrentSpecialization.IdSpecialization,CurrentYear );
+        }
+    }
+
+    public void AddGroup()
+    {
+        MainViewModel.Instance.UserControl = new AddGroupView(CurrentSpecialization);
     }
 }

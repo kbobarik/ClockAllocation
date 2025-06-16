@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("clock_allocation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7cabb614516a34d8d2a93ec501bb3e27913e6ca")]
 [assembly: System.Reflection.AssemblyProductAttribute("clock_allocation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("clock_allocation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

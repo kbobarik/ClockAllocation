@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Controls;
 using clock_allocation.Models;
+using clock_allocation.Views;
 using ReactiveUI;
 
 namespace clock_allocation.ViewModels;
@@ -31,13 +32,26 @@ public class TeachingLoadingViewModel : ViewModelBase
     public Teacher SelectedTeacher
     {
         get => _selectedTeacher;
-        set => this.RaiseAndSetIfChanged(ref _selectedTeacher, value);
+        set
+        {
+            if (value != null)
+            {
+                this.RaiseAndSetIfChanged(ref _selectedTeacher, value);
+                Years = new ObservableCollection<int>(db.TeachingLoads.Where(x=>x.IdTeacher == SelectedTeacher.IdTeacher).Select(x=>x.Year).OrderBy(x=>x).Distinct().ToList());
+                SelectedYear = Years.FirstOrDefault();
+                TeachingLoadingControl = new CurrentTeacherLoadingView(SelectedYear,SelectedTeacher.IdTeacher);
+            }
+        } 
     }
 
     public int SelectedYear
     {
         get => _selectedYear;
-        set => this.RaiseAndSetIfChanged(ref _selectedYear, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedYear, value);
+            TeachingLoadingControl = new CurrentTeacherLoadingView(SelectedYear,SelectedTeacher.IdTeacher);
+        }
     }
 
     public UserControl TeachingLoadingControl
@@ -50,9 +64,10 @@ public class TeachingLoadingViewModel : ViewModelBase
     {
         Teachers = new ObservableCollection<Teacher>(db.Teachers.OrderBy(x=>x.Surname).ToList());
         SelectedTeacher = Teachers.FirstOrDefault();
-        Years = new ObservableCollection<int>(db.TeachingLoads.Where(x=>x.IdTeacher == SelectedTeacher.IdTeacher).Select(x=>x.Year).OrderBy(x=>x).Distinct().ToList());
+        Years = new ObservableCollection<int>(db.TeachingLoads.Where(x => x.IdTeacher == SelectedTeacher.IdTeacher)
+            .Select(x => x.Year).OrderBy(x=>x).Distinct().ToList());
         SelectedYear = Years.FirstOrDefault();
-        TeachingLoadingControl = new UserControl();
+        TeachingLoadingControl = new CurrentTeacherLoadingView(SelectedYear,SelectedTeacher.IdTeacher);
         
     }
     public AutoCompleteFilterPredicate<object?> TeacherFilter => (search, item) =>
@@ -67,11 +82,11 @@ public class TeachingLoadingViewModel : ViewModelBase
 
     public void ToAddTeachingLoading()
     {
-        
+        MainViewModel.Instance.UserControl = new AddTeachingLoadingView(SelectedTeacher.IdTeacher);
     }
 
-    public void SelectByYear()
+    public void SelectByYear(int year)
     {
-        
+        SelectedYear = year;
     }
 }

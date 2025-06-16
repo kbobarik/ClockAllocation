@@ -10,9 +10,53 @@
              xmlns:conv="clr-namespace:clock_allocation.Resources">
     <UserControl.Resources>
         <conv:SpecializationToString x:Key="SpecializationToString" />
+        <conv:IsBackgroundYearConverter x:Key="BackgroundYearConverter" />
+        <conv:IsForegroundYearConverter x:Key="ForegroundYearConverter" />
     </UserControl.Resources>
-    <Grid RowDefinitions="Auto,*">
-        <AutoCompleteBox  Grid.Row="0"
+     <Grid RowDefinitions="Auto,*" ColumnDefinitions="2*,*">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Orientation="Horizontal">
+                <Border Width="130" Height="50"  Margin="2">
+                    <Button Background="#B44A45" Foreground="White"  Command="{Binding AddGroup}">
+                        <TextBlock Text="+" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Foreground="White"   />
+                    </Button>
+                </Border>
+                <ItemsControl ItemsSource="{Binding Years}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="130" Height="50" Margin="2">
+                                <Button
+                                    Command="{Binding $parent[UserControl].((vm:GroupViewModel)DataContext).SelectByYear}"
+                                    CommandParameter="{Binding}">
+                                    <Button.Background>
+                                        <MultiBinding Converter="{StaticResource BackgroundYearConverter}">
+                                            <Binding />
+                                            <Binding
+                                                Path="$parent[UserControl].((vm:GroupViewModel)DataContext).CurrentYear" />
+                                        </MultiBinding>
+                                    </Button.Background>
+                                    <Button.Foreground>
+                                        <MultiBinding Converter="{StaticResource ForegroundYearConverter}">
+                                            <Binding />
+                                            <Binding
+                                                Path="$parent[UserControl].((vm:GroupViewModel)DataContext).CurrentYear" />
+                                        </MultiBinding>
+                                    </Button.Foreground>
+                                    <TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+        <AutoCompleteBox Grid.Column="1" Grid.Row="0"
                          ItemsSource="{Binding Specializations}"
                          Watermark="Введите специальность"
                          MinimumPrefixLength="0"
@@ -28,6 +72,6 @@
                 </DataTemplate>
             </AutoCompleteBox.ItemTemplate>
         </AutoCompleteBox>
-        <UserControl Grid.Row="1" Content="{Binding UserControl}"></UserControl>
+        <UserControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding UserControl}"></UserControl>
     </Grid>
 </UserControl>

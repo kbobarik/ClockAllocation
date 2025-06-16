@@ -1,0 +1,116 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.AddGroupView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:AddGroupViewModel">
+    
+    <UserControl.Styles>
+        <Style Selector="Border#groupBorder">
+            <Setter Property="Background" Value="#FAFAFA"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style Selector="TextBox, ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#B44A45"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="180"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style Selector="Button:hover">
+            <Setter Property="Background" Value="#9C3A35"/>
+        </Style>
+
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#B44A45"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Margin="20,10">
+        <!-- Заголовок -->
+        <TextBlock Text="{Binding Title}"
+                   Classes="title"/>
+
+        <!-- Год поступления -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="Год поступления:" Classes="label"/>
+            <TextBox Text="{Binding Year}"
+                     Width="100"
+                     IsReadOnly="{Binding ReadOnly}"/>
+        </StackPanel>
+
+        <!-- Список групп -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Groups}" Margin="0,0,0,20">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="groupBorder">
+                            <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto">
+                                <!-- Номер в потоке -->
+                                <TextBlock Text="Номер в потоке:" Classes="label"/>
+                                <TextBox Grid.Column="1" 
+                                         Text="{Binding StreamNumber}"
+                                         Margin="0,0,0,5"/>
+
+                                <!-- Финансовая основа -->
+                                <TextBlock Grid.Row="1" 
+                                           Text="Финансовая основа:" 
+                                           Classes="label"/>
+                                <ComboBox Grid.Row="1" 
+                                          Grid.Column="1"
+                                          ItemsSource="{Binding $parent[UserControl].((vm:AddGroupViewModel)DataContext).FormOfEducations}" 
+                                          SelectedItem="{Binding FormOfEducation}"/>
+                                <Button Grid.Column="0" Grid.Row="2" Content="Удалить" Command="{Binding $parent[UserControl].((vm:AddGroupViewModel)DataContext).DeleteGroup}" CommandParameter="{Binding}"></Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <TextBlock Grid.Row="3" 
+                   Text="{Binding ErrorMessage}" 
+                   Foreground="Red"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,15"
+                   HorizontalAlignment="Center"/>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Добавить группу"
+                    Command="{Binding AddGroup}"/>
+            <Button Content="Сохранить"
+                    Command="{Binding Save}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

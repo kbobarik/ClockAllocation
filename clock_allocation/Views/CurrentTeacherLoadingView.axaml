@@ -1,0 +1,70 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="clock_allocation.Views.CurrentTeacherLoadingView"
+             xmlns:vm="using:clock_allocation.ViewModels"
+             x:DataType="vm:CurrentTeacherLoadingViewModel">
+    <Grid RowDefinitions="Auto,*" IsVisible="{Binding TeachingLoads.Count}">
+    <StackPanel Orientation="Horizontal" >
+        <Border Width="130" Height="50" Margin="2">
+            <Button Background="#B44A45" Foreground="White" Command="{Binding AskDeleteTeachingLoad}">
+                <TextBlock Text="Удалить" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" />
+            </Button>
+        </Border>
+        <Border Width="130" Height="50" Margin="2">
+            <Button Background="White" Foreground="#B44A45" Command="{Binding UpdateTeachingLoad}">
+                <TextBlock Text="Редактировать" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" />
+            </Button>
+        </Border>
+    </StackPanel>
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto"
+                  Background="#f5f5f5">
+       <ContentPresenter Content="{Binding TeachingLoad}" /> 
+        </ScrollViewer>
+        <Popup Grid.Row="1" IsOpen="{Binding IsDelete}" PlacementMode="Center">
+            <Border Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Width="300"
+                    Height="150">
+    
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+    
+                    <TextBlock Text="Вы действительно хотите удалить преподавательскую нагрузку?"
+                               FontSize="16"
+                               Width="280"
+                               TextWrapping="Wrap"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="Black" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0,10,0,0">
+    
+                        <!-- Кнопка "Да" -->
+                        <Button Content="Да"
+                                Command="{Binding DeleteTeachingLoad}"
+                                Background="#D32F2F"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+    
+                        <!-- Кнопка "Нет" -->
+                        <Button Content="Нет"
+                                Command="{Binding CancelDeleteCommand}"
+                                Background="#757575"
+                                Foreground="White"
+                                Width="100"
+                                Height="35"
+                                CornerRadius="6" />
+                    </StackPanel>
+                </StackPanel>
+    
+            </Border>
+        </Popup>
+    </Grid> 
+</UserControl>

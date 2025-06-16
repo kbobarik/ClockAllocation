@@ -7,9 +7,9 @@ namespace clock_allocation.Views;
 
 public partial class CurrentGroupView : UserControl
 {
-    public CurrentGroupView(int idSpecialisation)
+    public CurrentGroupView(int idSpecialisation, int year)
     {
         InitializeComponent();
-        DataContext = new CurrentGroupViewModel(idSpecialisation);
+        DataContext = new CurrentGroupViewModel(idSpecialisation, year);
     }
 }
